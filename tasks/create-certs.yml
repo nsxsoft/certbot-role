@@ -1,0 +1,11 @@
+---
+
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ item.vhost | first | replace('*.', '') }}/cert.pem
+  register: letsencrypt_cert
+
+- name: Generate new certificate if one doesn't exist.
+  command: "certbot certonly --apache --noninteractive --agree-tos --email support@email.ly -d {{ item.vhost }}"
+  when: not letsencrypt_cert.stat.exists
+  become: true

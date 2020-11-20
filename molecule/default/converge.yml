@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    # - name: "Include apache-role"
+    #   include_role:
+    #     name: "apache-role"
+    - name: "Include certbot-role"
+      include_role:
+        name: "certbot-role"

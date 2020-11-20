@@ -1,0 +1,5 @@
+---
+
+vhosts:
+  - {"vhost": "api.hafelati.com", "owner": "hafelati"}
+  - {"vhost": "dashboard.hafelati.com", "owner": "hafelati"}

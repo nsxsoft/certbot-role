@@ -1,0 +1,37 @@
+---
+# tasks file for certbot-role
+
+- name: Install epel-repository
+  yum:
+    name: epel-release
+    state: installed
+  become: true
+
+- name: Install required packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - certbot 
+    - python2-certbot-apache 
+    - mod_ssl
+  become: true
+
+- name: Check if apache is installed
+  stat:
+    path: /etc/httpd/conf/httpd.conf
+  register: apache_installed
+
+- name: Configure Let's Encrypt for vhosts
+  include_tasks: create-certs.yml
+  loop: "{{ vhosts }}"
+  when: apache_installed.stat.exists
+  
+- name: Add cron job for certbot renewal (if configured).
+  cron:
+    name: Certbot automatic renewal.
+    job: "certbot renew --quiet --no-self-upgrade"
+    minute: "30"
+    hour: "3"
+    user: "root"
+  become: true
